@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: paymentGateway
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+application:
+  security:
+    jwt:
+      secret-key: ${SPRING_SECURITY_KEY}
+      expiration: 86400000
+      refresh-token:
+        expiration: 604800000 # 7 days
