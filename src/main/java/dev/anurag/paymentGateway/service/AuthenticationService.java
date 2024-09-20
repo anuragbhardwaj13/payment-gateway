@@ -7,6 +7,7 @@ import dev.anurag.paymentGateway.enums.Role;
 import dev.anurag.paymentGateway.entity.User;
 import dev.anurag.paymentGateway.exception.UserRegistrationException;
 import dev.anurag.paymentGateway.repository.UserRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -27,8 +28,26 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
+    private final VerificationService verificationService;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public void initiateRegistration(RegisterRequest request) throws MessagingException {
+        if (repository.findByEmail(request.getEmail()).isPresent()) {
+            throw new UserRegistrationException("User with this email already exists.");
+        }
+
+        String verificationCode = verificationService.generateVerificationCode(request);
+        emailService.sendVerificationEmail(request.getEmail(), verificationCode);
+    }
+
+    public AuthenticationResponse completeRegistration(String email, String verificationCode) {
+        if (!verificationService.verifyCode(email, verificationCode)) {
+            throw new UserRegistrationException("Invalid or expired verification code.");
+        }
+
+        // Fetch the saved registration request
+        RegisterRequest request = verificationService.getRegistrationRequest(email);
+
         try {
             var user = User.builder()
                     .fullName(request.getFullName())
@@ -62,6 +81,41 @@ public class AuthenticationService {
             throw new UserRegistrationException(message);
         }
     }
+
+//    public AuthenticationResponse register(RegisterRequest request) {
+//        try {
+//            var user = User.builder()
+//                    .fullName(request.getFullName())
+//                    .username(request.getUsername())
+//                    .phone(request.getPhone())
+//                    .email(request.getEmail())
+//                    .governmentId(request.getGovernmentId())
+//                    .password(passwordEncoder.encode(request.getPassword()))
+//                    .role(Role.USER)
+//                    .build();
+//            repository.save(user);
+//            var jwtToken = jwtService.generateToken(user);
+//            return AuthenticationResponse.builder()
+//                    .token(jwtToken)
+//                    .build();
+//        } catch (DataIntegrityViolationException e) {
+//            String message = "An error occurred during registration.";
+//            if (e.getCause() instanceof ConstraintViolationException) {
+//                ConstraintViolationException cve = (ConstraintViolationException) e.getCause();
+//                String constraintName = cve.getConstraintName();
+//                if (constraintName != null) {
+//                    if (constraintName.contains("phone")) {
+//                        message = "User with this phone number already exists.";
+//                    } else if (constraintName.contains("email")) {
+//                        message = "User with this email already exists.";
+//                    } else if (constraintName.contains("username")) {
+//                        message = "User with this username already exists.";
+//                    }
+//                }
+//            }
+//            throw new UserRegistrationException(message);
+//        }
+//    }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         logger.info("Attempting authentication for identifier: {}", request.getIdentifier());

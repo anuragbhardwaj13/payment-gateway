@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZapVault Email Verification</title>
+</head>
+<body style="font-family: 'Arial', sans-serif; line-height: 1.6; background-color: #f4f4f4; margin: 0; padding: 0;">
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 600px; margin: auto; background-color: #ffffff; box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);">
+    <tr>
+        <td style="padding: 40px 30px; background-color: #007bff; text-align: center;">
+            <h1 style="color: #ffffff; font-size: 28px; margin: 0;">ZapVault</h1>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 30px; background-color: #ffff00; text-align: center;">
+            <p style="font-size: 16px; color: #000000; margin: 0; font-weight: bold;">DISCLAIMER: This is not an actual banking product. ZapVault is an educational project to understand Spring Boot Microservice Architecture.</p>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 40px 30px;">
+            <h2 style="color: #007bff; font-size: 24px; margin-top: 0;">Verify Your Email</h2>
+            <p style="font-size: 16px; margin-bottom: 20px;">Thank you for participating in the ZapVault project. To continue, please use the following verification code:</p>
+            <div style="background-color: #f8f9fa; border: 2px dashed #007bff; border-radius: 10px; padding: 20px; text-align: center; margin-bottom: 20px;">
+                <h2 style="color: #007bff; font-size: 32px; margin: 0;" th:text="${verificationCode}"></h2>
+            </div>
+            <p style="font-size: 16px; margin-bottom: 20px;">If you didn't request this verification, please disregard this email.</p>
+            <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;">
+            <p style="font-size: 14px; color: #666666;">ZapVault is a project built for educational purposes to demonstrate the fundamentals of Spring Boot Microservice Architecture. It does not provide any actual financial services.</p>
+            <p style="font-size: 14px; color: #666666;">For any questions about this educational project, please contact the development team. <a href="https://x.com/anuragbh13" target="_blank" style="color: #007bff; text-decoration: none;">x.com/anuragbh13</a></p>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px 30px; background-color: #f8f9fa; text-align: center;">
+            <p style="font-size: 14px; color: #666666; margin: 0;">&copy; 2024 Anurag Bhardwaj. All rights reserved.</p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
